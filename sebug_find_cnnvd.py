@@ -3,6 +3,8 @@
 from bs4 import BeautifulSoup
 import re
 from dummy import *
+import time, threading
+
 names = {}
 urls = []
 titles = []
@@ -10,19 +12,21 @@ ssvs = []
 s = '0123456789'
 vulurl = 'https://www.sebug.net/vuldb/ssvid-'
 def get_url():
-    for i in range(100,90000):
+    for i in range(70000,70100):
         url = 'https://www.sebug.net/vuldb/ssvid-'+str(i)
         urls.append(url)
     return urls
 
 def get_title(data): 
-    CVE = False 
+    CNNVD = True 
+    CVE = False
     soup = BeautifulSoup(data,"html.parser")
     for string in soup.strings:
-        if u'补充'  in string: 
+        if 'CNNVD-20'  in string: 
+            CNNVD = False
+        if 'CVE-20' in string:
             CVE = True
-            break
-    if CVE:
+    if CNNVD and CVE:
         title = soup.h1.string.encode('utf-8').strip()
         ssv = soup.find(href=re.compile("/help/vul#ssv")).string
         #print title+'@@'
@@ -47,10 +51,9 @@ if __name__ == '__main__':
         if code==200:
             get_title(data)
     file_sebug = file('sebug.html','w+')
-    #sebug = dict(zip(titles,ssvs))
-    #for i,j in sebug.items():
-    for j in ssvs:
-        file_sebug.write(j+'\n')
+    sebug = dict(zip(titles,ssvs))
+    for i,j in sebug.items():
+        file_sebug.write(i + ' : ' + j +'\r\n')
     file_sebug.close()
 
 
