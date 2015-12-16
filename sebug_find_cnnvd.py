@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 import re
 from dummy import *
 import time, threading
-
 names = {}
 urls = []
 titles = []
@@ -12,7 +11,7 @@ ssvs = []
 s = '0123456789'
 vulurl = 'https://www.sebug.net/vuldb/ssvid-'
 def get_url():
-    for i in range(70000,70100):
+    for i in range(71001,72000):#70000-71000-72000
         url = 'https://www.sebug.net/vuldb/ssvid-'+str(i)
         urls.append(url)
     return urls
@@ -29,13 +28,12 @@ def get_title(data):
     if CNNVD and CVE:
         title = soup.h1.string.encode('utf-8').strip()
         ssv = soup.find(href=re.compile("/help/vul#ssv")).string
-        #print title+'@@'
-        #print ssv+'##'
         vulurl1 = vulurl + ssv[4:]
         myurl = "<a href='" + vulurl1 + "'>"+ssv+'</a>'
         print myurl
         titles.append(title)
         ssvs.append(myurl)
+    print soup.find(href=re.compile("/help/vul#ssv")).string
 
             
 
